@@ -6,10 +6,17 @@ namespace TileMatch.Tile
 {
     public class TileComponent : MonoBehaviour
     {
-        private int _row;
-        private int _col;
 
-        public int Row { get => _row; set => _row = value; }
-        public int Col { get => _col; set => _col = value; }
+        [SerializeField] private int _id;
+        public int Id { get => _id; }
+
+        private Index _index;
+        public Index Index { get => _index; }
+
+        public void SetIndex(int row, int col)
+        {
+            _index.Row = row;
+            _index.Col = col;
+        }
     }
 }
