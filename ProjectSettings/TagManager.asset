@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Dynamic
+  - Static
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Back
+    uniqueID: 4284457369
+    locked: 0
+  - name: Middle
+    uniqueID: 613447147
+    locked: 0
+  - name: Front
+    uniqueID: 3621227511
     locked: 0
