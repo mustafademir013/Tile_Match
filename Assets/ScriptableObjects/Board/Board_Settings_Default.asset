@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rowCount: 9
   _colCount: 9
-  _tileInterval: 2.3
+  _tileInterval: 2.5
