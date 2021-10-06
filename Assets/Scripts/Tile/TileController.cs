@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TileMatch.Base;
 using TileMatch.Board;
 using TileMatch.Inp;
+using TileMatch.UI;
 using UnityEngine;
 
 namespace TileMatch.Tile
@@ -19,16 +22,18 @@ namespace TileMatch.Tile
         }
     }
 
-
     public class TileController : MonoBehaviour
     {
 
         const string TILETAG = "Tile";
 
+        public static event Action NoFoundMatch;
+
         [SerializeField] private BoardSettings _boardSettings;
         [SerializeField] private TransformData _transformData;
 
         [SerializeField] private GameObject[] _tilePrefabs;
+        [SerializeField] private IntValue _minumumMatchCount;
 
         private Transform[,] _tileTransforms;
 
@@ -36,11 +41,13 @@ namespace TileMatch.Tile
         {
             BoardController.BoardCreated += CreateTilesHandler;
             InputController.TouchDropped += ClickTileHandler;
+            GameOverPanelController.PanelClosed += RenewTilesHandler;
         }
         private void OnDisable()
         {
             BoardController.BoardCreated -= CreateTilesHandler;
             InputController.TouchDropped -= ClickTileHandler;
+            GameOverPanelController.PanelClosed -= RenewTilesHandler;
         }
 
         private void ClickTileHandler(Vector3 touchPos)
@@ -49,8 +56,11 @@ namespace TileMatch.Tile
             if (hit != null && hit.tag == TILETAG)
             {
                 List<Index> matchedList = FindMatches(hit.transform);
-                if (matchedList.Count > 1)
+                if (matchedList.Count >= _minumumMatchCount.Value)
                 {
+                    int id = _tileTransforms[matchedList[0].Row, matchedList[0].Col].
+                        GetComponent<TileComponent>().Id;
+                    Debug.Log("--Tile Id =>" + id + "-- Match Count =>" + matchedList.Count);
                     DeSpawnTile(matchedList);
                     StartCoroutine(AlignTile());
                 }
@@ -73,6 +83,13 @@ namespace TileMatch.Tile
                 }
             }
         }
+
+        private void RenewTilesHandler()
+        {
+            foreach (var item in _tileTransforms)
+                DeSpawnTile(item);
+            CreateTilesHandler();
+        }
         private void SpawnTile(int[] emptyCounts)
         {
             for (int col = 0; col < emptyCounts.Length; col++)
@@ -92,7 +109,7 @@ namespace TileMatch.Tile
         }
         private Transform SpawnTile(Transform spawnTr)
         {
-            int rnd = Random.Range(0, _tilePrefabs.Length);
+            int rnd = UnityEngine.Random.Range(0, _tilePrefabs.Length);
             GameObject tr = SimplePool.Spawn(_tilePrefabs[rnd], spawnTr.position, Quaternion.identity);
             return tr.transform;
         }
@@ -100,9 +117,13 @@ namespace TileMatch.Tile
         {
             foreach (var item in list)
             {
-                SimplePool.Despawn(_tileTransforms[item.Row, item.Col].gameObject);
+                DeSpawnTile(_tileTransforms[item.Row, item.Col]);
                 _tileTransforms[item.Row, item.Col] = null;
             }
+        }
+        private void DeSpawnTile(Transform transform)
+        {
+            SimplePool.Despawn(transform.gameObject);
         }
         private void TranslateTile(Transform tile, Index index, float time)
         {
@@ -114,15 +135,19 @@ namespace TileMatch.Tile
             sourceTr.GetComponent<TileComponent>().SetIndex(target.Row, target.Col);
             TranslateTile(sourceTr, target, 0.1f);
         }
-
-
-
-
         IEnumerator AlignTile()
         {
             yield return new WaitForSeconds(0.2f);
             int[] emptyCounts = ReAlignTile();
             SpawnTile(emptyCounts);
+            yield return new WaitForSeconds(0.2f);
+            List<Index> longestMatchList = FindLongestMatch();
+
+            Debug.Log("Long Match List Count=>" + longestMatchList.Count);
+            if (longestMatchList.Count < _minumumMatchCount.Value)
+            {
+                NoFoundMatch?.Invoke();
+            }
         }
 
         private int[] ReAlignTile()
@@ -154,10 +179,6 @@ namespace TileMatch.Tile
                 }
                 emptyTransformCount[col] = emptyCount;
             }
-            foreach (var item in emptyTransformCount)
-            {
-                Debug.Log(item);
-            }
             return emptyTransformCount;
         }
         private Index FindFirstUpNeighbor(Index pivot)
@@ -171,7 +192,18 @@ namespace TileMatch.Tile
             }
             return index;
         }
+        private List<Index> FindLongestMatch()
+        {
+            List<Index> longestMatchList = new List<Index>();
 
+            foreach (var item in _tileTransforms)
+            {
+                List<Index> list = FindMatches(item);
+                if (longestMatchList.Count < list.Count)
+                    longestMatchList = list;
+            }
+            return longestMatchList;
+        }
         private List<Index> FindMatches(Transform pivotTr)
         {
             Index pivotIndex = pivotTr.GetComponent<TileComponent>().Index;
