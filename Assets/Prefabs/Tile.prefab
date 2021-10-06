@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5731739405083606588
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5731739405083606722}
+  - component: {fileID: 5731739405083606589}
+  m_Layer: 0
+  m_Name: Tile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5731739405083606722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731739405083606588}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5731739405083606589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731739405083606588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5d886ec6497d4552bab1aeeec6cfd7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _boardSettings: {fileID: 11400000, guid: 9f07ee4223c69426eb7ca9b157e1ccfd, type: 2}
+  _transformData: {fileID: 11400000, guid: 6bf64d5bb32bf41909c9579deeab41e7, type: 2}
+  _tilePrefabs:
+  - {fileID: 6839161345078462657, guid: 6634d46a618fa4c3ca4ea4b7b9749e2a, type: 3}
+  - {fileID: 3033924093882799117, guid: 2846455d1c64849e8ba0780e830d81fd, type: 3}
+  - {fileID: 8703086564728142006, guid: 0bc692bb82b4548b8b96a271938620e4, type: 3}
+  - {fileID: 3756554474035474536, guid: 3af360a1a84074200a5857e763bfad4c, type: 3}
+  - {fileID: 4812947268867070256, guid: 822482d44674c465bb1ca5867b027d36, type: 3}
+  _minumumMatchCount: {fileID: 11400000, guid: 89ccaba23be29476a971445d3fce6ce1, type: 2}
